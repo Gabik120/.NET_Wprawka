@@ -4,6 +4,7 @@ namespace Wprawka1.Models
 {
     public class Wypozyczenie
     {
+        public int Id { get; set; }
         public int IDczytelnika { get; set; }
         public Czytelnik czytelnik { get; set; }
 
