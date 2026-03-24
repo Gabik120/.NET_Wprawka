@@ -46,15 +46,14 @@ namespace Wprawka1.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Tytul = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    IDwydawcy = table.Column<int>(type: "int", nullable: false),
-                    wydawcaId = table.Column<int>(type: "int", nullable: false)
+                    wydawcaID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ksiazki", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Ksiazki_Wydawcy_wydawcaId",
-                        column: x => x.wydawcaId,
+                        name: "FK_Ksiazki_Wydawcy_wydawcaID",
+                        column: x => x.wydawcaID,
                         principalTable: "Wydawcy",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -66,10 +65,8 @@ namespace Wprawka1.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IDczytelnika = table.Column<int>(type: "int", nullable: false),
-                    czytelnikId = table.Column<int>(type: "int", nullable: false),
-                    IDksiazki = table.Column<int>(type: "int", nullable: false),
-                    ksiazkaId = table.Column<int>(type: "int", nullable: false),
+                    czytelnikID = table.Column<int>(type: "int", nullable: false),
+                    ksiazkaID = table.Column<int>(type: "int", nullable: false),
                     DataWypozyczenia = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DataZwrotu = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -77,33 +74,33 @@ namespace Wprawka1.Migrations
                 {
                     table.PrimaryKey("PK_Wypozyczenia", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Wypozyczenia_Czytelnicy_czytelnikId",
-                        column: x => x.czytelnikId,
+                        name: "FK_Wypozyczenia_Czytelnicy_czytelnikID",
+                        column: x => x.czytelnikID,
                         principalTable: "Czytelnicy",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Wypozyczenia_Ksiazki_ksiazkaId",
-                        column: x => x.ksiazkaId,
+                        name: "FK_Wypozyczenia_Ksiazki_ksiazkaID",
+                        column: x => x.ksiazkaID,
                         principalTable: "Ksiazki",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ksiazki_wydawcaId",
+                name: "IX_Ksiazki_wydawcaID",
                 table: "Ksiazki",
-                column: "wydawcaId");
+                column: "wydawcaID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Wypozyczenia_czytelnikId",
+                name: "IX_Wypozyczenia_czytelnikID",
                 table: "Wypozyczenia",
-                column: "czytelnikId");
+                column: "czytelnikID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Wypozyczenia_ksiazkaId",
+                name: "IX_Wypozyczenia_ksiazkaID",
                 table: "Wypozyczenia",
-                column: "ksiazkaId");
+                column: "ksiazkaID");
         }
 
         /// <inheritdoc />

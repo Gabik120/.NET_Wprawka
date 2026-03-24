@@ -12,8 +12,8 @@ using Wprawka1.Data;
 namespace Wprawka1.Migrations
 {
     [DbContext(typeof(Biblioteka))]
-    [Migration("20260322130914_Init")]
-    partial class Init
+    [Migration("20260324193027_KsiazkaUpd")]
+    partial class KsiazkaUpd
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -61,20 +61,17 @@ namespace Wprawka1.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("IDwydawcy")
-                        .HasColumnType("int");
-
                     b.Property<string>("Tytul")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("wydawcaId")
+                    b.Property<int>("wydawcaID")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("wydawcaId");
+                    b.HasIndex("wydawcaID");
 
                     b.ToTable("Ksiazki");
                 });
@@ -111,23 +108,17 @@ namespace Wprawka1.Migrations
                     b.Property<DateTime?>("DataZwrotu")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("IDczytelnika")
+                    b.Property<int>("czytelnikID")
                         .HasColumnType("int");
 
-                    b.Property<int>("IDksiazki")
-                        .HasColumnType("int");
-
-                    b.Property<int>("czytelnikId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ksiazkaId")
+                    b.Property<int>("ksiazkaID")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("czytelnikId");
+                    b.HasIndex("czytelnikID");
 
-                    b.HasIndex("ksiazkaId");
+                    b.HasIndex("ksiazkaID");
 
                     b.ToTable("Wypozyczenia");
                 });
@@ -136,7 +127,7 @@ namespace Wprawka1.Migrations
                 {
                     b.HasOne("Wprawka1.Models.Wydawca", "wydawca")
                         .WithMany("Ksiazki")
-                        .HasForeignKey("wydawcaId")
+                        .HasForeignKey("wydawcaID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -147,13 +138,13 @@ namespace Wprawka1.Migrations
                 {
                     b.HasOne("Wprawka1.Models.Czytelnik", "czytelnik")
                         .WithMany("Wypozyczenia")
-                        .HasForeignKey("czytelnikId")
+                        .HasForeignKey("czytelnikID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Wprawka1.Models.Ksiazka", "ksiazka")
                         .WithMany("Wypozyczania")
-                        .HasForeignKey("ksiazkaId")
+                        .HasForeignKey("ksiazkaID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

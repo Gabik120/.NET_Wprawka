@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace Wprawka1.Models
 {
@@ -10,7 +11,9 @@ namespace Wprawka1.Models
         [MaxLength(200)]
         public string Tytul { get; set; }
 
-        public int IDwydawcy { get; set; }
+        [Display(Name = "Wydawnictwo")]
+        public int wydawcaID { get; set; }
+        [ValidateNever]
         public Wydawca wydawca { get; set; }
         public ICollection<Wypozyczenie> Wypozyczania { get; set; } = new List<Wypozyczenie>();
     }
