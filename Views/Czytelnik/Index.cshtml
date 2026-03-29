@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Wprawka1.Models.Ksiazka>
+﻿@model IEnumerable<Wprawka1.Models.Czytelnik>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,24 +9,17 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<form asp-action="Index" method="get">
-    <div class="form-actions">
-        <p>
-            Szukaj po tytule:
-            <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" />
-            <input type="submit" value="Filtruj" /> |
-            <a asp-action="Index">Pokaż wszystkie</a>
-        </p>
-    </div>
-</form>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Tytul)
+                @Html.DisplayNameFor(model => model.Imie)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.wydawca)
+                @Html.DisplayNameFor(model => model.Nazwisko)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.KartaBiblioteczna)
             </th>
             <th></th>
         </tr>
@@ -35,10 +28,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Tytul)
+                @Html.DisplayFor(modelItem => item.Imie)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.wydawca.Nazwa)
+                @Html.DisplayFor(modelItem => item.Nazwisko)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.KartaBiblioteczna)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

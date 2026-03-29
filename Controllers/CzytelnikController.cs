@@ -10,29 +10,22 @@ using Wprawka1.Models;
 
 namespace Wprawka1.Controllers
 {
-    public class KsiazkaController : Controller
+    public class CzytelnikController : Controller
     {
         private readonly Biblioteka _context;
 
-        public KsiazkaController(Biblioteka context)
+        public CzytelnikController(Biblioteka context)
         {
             _context = context;
         }
 
-        // GET: Ksiazka
-        public async Task<IActionResult> Index(string searchString)
+        // GET: Czytelnik
+        public async Task<IActionResult> Index()
         {
-            var biblioteka = _context.Ksiazki.Include(k => k.wydawca).AsQueryable(); ;
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                biblioteka = biblioteka.Where(k => k.Tytul.Contains(searchString));
-            }
-
-            return View(await biblioteka.ToListAsync());
+            return View(await _context.Czytelnicy.ToListAsync());
         }
 
-        // GET: Ksiazka/Details/5
+        // GET: Czytelnik/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -40,42 +33,39 @@ namespace Wprawka1.Controllers
                 return NotFound();
             }
 
-            var ksiazka = await _context.Ksiazki
-                .Include(k => k.wydawca)
+            var czytelnik = await _context.Czytelnicy
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (ksiazka == null)
+            if (czytelnik == null)
             {
                 return NotFound();
             }
 
-            return View(ksiazka);
+            return View(czytelnik);
         }
 
-        // GET: Ksiazka/Create
+        // GET: Czytelnik/Create
         public IActionResult Create()
         {
-            ViewData["wydawcaID"] = new SelectList(_context.Wydawcy, "Id", "Nazwa");
             return View();
         }
 
-        // POST: Ksiazka/Create
+        // POST: Czytelnik/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Tytul,wydawcaID")] Ksiazka ksiazka)
+        public async Task<IActionResult> Create([Bind("Id,Imie,Nazwisko,KartaBiblioteczna")] Czytelnik czytelnik)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(ksiazka);
+                _context.Add(czytelnik);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["wydawcaID"] = new SelectList(_context.Wydawcy, "Id", "Nazwa", ksiazka.wydawcaID);
-            return View(ksiazka);
+            return View(czytelnik);
         }
 
-        // GET: Ksiazka/Edit/5
+        // GET: Czytelnik/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -83,23 +73,22 @@ namespace Wprawka1.Controllers
                 return NotFound();
             }
 
-            var ksiazka = await _context.Ksiazki.FindAsync(id);
-            if (ksiazka == null)
+            var czytelnik = await _context.Czytelnicy.FindAsync(id);
+            if (czytelnik == null)
             {
                 return NotFound();
             }
-            ViewData["wydawcaID"] = new SelectList(_context.Wydawcy, "Id", "Nazwa", ksiazka.wydawcaID);
-            return View(ksiazka);
+            return View(czytelnik);
         }
 
-        // POST: Ksiazka/Edit/5
+        // POST: Czytelnik/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Tytul,wydawcaID")] Ksiazka ksiazka)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Imie,Nazwisko,KartaBiblioteczna")] Czytelnik czytelnik)
         {
-            if (id != ksiazka.Id)
+            if (id != czytelnik.Id)
             {
                 return NotFound();
             }
@@ -108,12 +97,12 @@ namespace Wprawka1.Controllers
             {
                 try
                 {
-                    _context.Update(ksiazka);
+                    _context.Update(czytelnik);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!KsiazkaExists(ksiazka.Id))
+                    if (!CzytelnikExists(czytelnik.Id))
                     {
                         return NotFound();
                     }
@@ -124,11 +113,10 @@ namespace Wprawka1.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["wydawcaID"] = new SelectList(_context.Wydawcy, "Id", "Nazwa", ksiazka.wydawcaID);
-            return View(ksiazka);
+            return View(czytelnik);
         }
 
-        // GET: Ksiazka/Delete/5
+        // GET: Czytelnik/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -136,35 +124,34 @@ namespace Wprawka1.Controllers
                 return NotFound();
             }
 
-            var ksiazka = await _context.Ksiazki
-                .Include(k => k.wydawca)
+            var czytelnik = await _context.Czytelnicy
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (ksiazka == null)
+            if (czytelnik == null)
             {
                 return NotFound();
             }
 
-            return View(ksiazka);
+            return View(czytelnik);
         }
 
-        // POST: Ksiazka/Delete/5
+        // POST: Czytelnik/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ksiazka = await _context.Ksiazki.FindAsync(id);
-            if (ksiazka != null)
+            var czytelnik = await _context.Czytelnicy.FindAsync(id);
+            if (czytelnik != null)
             {
-                _context.Ksiazki.Remove(ksiazka);
+                _context.Czytelnicy.Remove(czytelnik);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool KsiazkaExists(int id)
+        private bool CzytelnikExists(int id)
         {
-            return _context.Ksiazki.Any(e => e.Id == id);
+            return _context.Czytelnicy.Any(e => e.Id == id);
         }
     }
 }

@@ -10,29 +10,23 @@ using Wprawka1.Models;
 
 namespace Wprawka1.Controllers
 {
-    public class KsiazkaController : Controller
+    public class WypozyczenieController : Controller
     {
         private readonly Biblioteka _context;
 
-        public KsiazkaController(Biblioteka context)
+        public WypozyczenieController(Biblioteka context)
         {
             _context = context;
         }
 
-        // GET: Ksiazka
-        public async Task<IActionResult> Index(string searchString)
+        // GET: Wypozyczenie
+        public async Task<IActionResult> Index()
         {
-            var biblioteka = _context.Ksiazki.Include(k => k.wydawca).AsQueryable(); ;
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                biblioteka = biblioteka.Where(k => k.Tytul.Contains(searchString));
-            }
-
+            var biblioteka = _context.Wypozyczenia.Include(w => w.czytelnik).Include(w => w.ksiazka);
             return View(await biblioteka.ToListAsync());
         }
 
-        // GET: Ksiazka/Details/5
+        // GET: Wypozyczenie/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -40,42 +34,45 @@ namespace Wprawka1.Controllers
                 return NotFound();
             }
 
-            var ksiazka = await _context.Ksiazki
-                .Include(k => k.wydawca)
+            var wypozyczenie = await _context.Wypozyczenia
+                .Include(w => w.czytelnik)
+                .Include(w => w.ksiazka)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (ksiazka == null)
+            if (wypozyczenie == null)
             {
                 return NotFound();
             }
 
-            return View(ksiazka);
+            return View(wypozyczenie);
         }
 
-        // GET: Ksiazka/Create
+        // GET: Wypozyczenie/Create
         public IActionResult Create()
         {
-            ViewData["wydawcaID"] = new SelectList(_context.Wydawcy, "Id", "Nazwa");
+            ViewData["czytelnikID"] = new SelectList(_context.Czytelnicy, "Id", "Imie");
+            ViewData["ksiazkaID"] = new SelectList(_context.Ksiazki, "Id", "Tytul");
             return View();
         }
 
-        // POST: Ksiazka/Create
+        // POST: Wypozyczenie/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Tytul,wydawcaID")] Ksiazka ksiazka)
+        public async Task<IActionResult> Create([Bind("Id,czytelnikID,ksiazkaID,DataWypozyczenia,DataZwrotu")] Wypozyczenie wypozyczenie)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(ksiazka);
+                _context.Add(wypozyczenie);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["wydawcaID"] = new SelectList(_context.Wydawcy, "Id", "Nazwa", ksiazka.wydawcaID);
-            return View(ksiazka);
+            ViewData["czytelnikID"] = new SelectList(_context.Czytelnicy, "Id", "Imie", wypozyczenie.czytelnikID);
+            ViewData["ksiazkaID"] = new SelectList(_context.Ksiazki, "Id", "Tytul", wypozyczenie.ksiazkaID);
+            return View(wypozyczenie);
         }
 
-        // GET: Ksiazka/Edit/5
+        // GET: Wypozyczenie/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -83,23 +80,24 @@ namespace Wprawka1.Controllers
                 return NotFound();
             }
 
-            var ksiazka = await _context.Ksiazki.FindAsync(id);
-            if (ksiazka == null)
+            var wypozyczenie = await _context.Wypozyczenia.FindAsync(id);
+            if (wypozyczenie == null)
             {
                 return NotFound();
             }
-            ViewData["wydawcaID"] = new SelectList(_context.Wydawcy, "Id", "Nazwa", ksiazka.wydawcaID);
-            return View(ksiazka);
+            ViewData["czytelnikID"] = new SelectList(_context.Czytelnicy, "Id", "Imie", wypozyczenie.czytelnikID);
+            ViewData["ksiazkaID"] = new SelectList(_context.Ksiazki, "Id", "Tytul", wypozyczenie.ksiazkaID);
+            return View(wypozyczenie);
         }
 
-        // POST: Ksiazka/Edit/5
+        // POST: Wypozyczenie/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Tytul,wydawcaID")] Ksiazka ksiazka)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,czytelnikID,ksiazkaID,DataWypozyczenia,DataZwrotu")] Wypozyczenie wypozyczenie)
         {
-            if (id != ksiazka.Id)
+            if (id != wypozyczenie.Id)
             {
                 return NotFound();
             }
@@ -108,12 +106,12 @@ namespace Wprawka1.Controllers
             {
                 try
                 {
-                    _context.Update(ksiazka);
+                    _context.Update(wypozyczenie);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!KsiazkaExists(ksiazka.Id))
+                    if (!WypozyczenieExists(wypozyczenie.Id))
                     {
                         return NotFound();
                     }
@@ -124,11 +122,12 @@ namespace Wprawka1.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["wydawcaID"] = new SelectList(_context.Wydawcy, "Id", "Nazwa", ksiazka.wydawcaID);
-            return View(ksiazka);
+            ViewData["czytelnikID"] = new SelectList(_context.Czytelnicy, "Id", "Imie", wypozyczenie.czytelnikID);
+            ViewData["ksiazkaID"] = new SelectList(_context.Ksiazki, "Id", "Tytul", wypozyczenie.ksiazkaID);
+            return View(wypozyczenie);
         }
 
-        // GET: Ksiazka/Delete/5
+        // GET: Wypozyczenie/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -136,35 +135,36 @@ namespace Wprawka1.Controllers
                 return NotFound();
             }
 
-            var ksiazka = await _context.Ksiazki
-                .Include(k => k.wydawca)
+            var wypozyczenie = await _context.Wypozyczenia
+                .Include(w => w.czytelnik)
+                .Include(w => w.ksiazka)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (ksiazka == null)
+            if (wypozyczenie == null)
             {
                 return NotFound();
             }
 
-            return View(ksiazka);
+            return View(wypozyczenie);
         }
 
-        // POST: Ksiazka/Delete/5
+        // POST: Wypozyczenie/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ksiazka = await _context.Ksiazki.FindAsync(id);
-            if (ksiazka != null)
+            var wypozyczenie = await _context.Wypozyczenia.FindAsync(id);
+            if (wypozyczenie != null)
             {
-                _context.Ksiazki.Remove(ksiazka);
+                _context.Wypozyczenia.Remove(wypozyczenie);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool KsiazkaExists(int id)
+        private bool WypozyczenieExists(int id)
         {
-            return _context.Ksiazki.Any(e => e.Id == id);
+            return _context.Wypozyczenia.Any(e => e.Id == id);
         }
     }
 }
